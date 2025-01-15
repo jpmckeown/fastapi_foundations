@@ -18,8 +18,7 @@ templates = Jinja2Templates(directory="templates")
 def home(request: Request,
          cars_cookie: Annotated[str | None, Cookie()]):
     print(cars_cookie)
-    return templates.TemplateResponse("home.html",
-                                      {"request": request})
+    return templates.TemplateResponse(request, "home.html")
 
 
 @router.post("/search", response_class=HTMLResponse)
