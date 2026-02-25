@@ -25,7 +25,16 @@ async def get_cars(doors: int|None = None, size: str|None = None):
         result = [x for x in result if x['doors'] == doors]
     return result
 
+@app.get("/cars/{id}")
+async def car_by_id(id):
+    """Return one car selected by id."""
+    print(type(id))
+    result = [x for x in db if x['id'] == id]
+    return result[0]
+
+
 @app.get("/")
 async def welcome(name):
     """Return a welcome message."""
     return {'message': f"Welcome, {name.upper()} to the Car Sharing service!"}
+
