@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from schemas import load_db, save_db, Car
+from schemas import load_db, save_db, Car, CarOutput
 import uvicorn
 
 
@@ -47,9 +47,12 @@ async def car_by_id(id: int) -> Car:
 
 
 @app.post("/cars/")
-def add_car(car: Car):
-    db.append(car)
+def add_car(car: Car) -> CarOutput:
+    print(len(db))
+    new_car = CarOutput(size=car.size, doors=car.doors, fuel=car.fuel, transmission=car.transmission, id=len(db)+1)
+    db.append(new_car)
     save_db(db)
+    return new_car
 
 
 @app.get("/")
