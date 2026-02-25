@@ -1,4 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+import uvicorn
+
 
 app = FastAPI()
 db = [
@@ -14,7 +16,7 @@ db = [
 ]
 
 @app.get("/cars/")
-async def get_cars(doors: int|None = None, size: str|None = None):
+async def get_cars(doors: int|None = None, size: str|None = None) -> list:
     """Retrieve all cars."""
     print("doors raw:", repr(doors), "type:", type(doors))
     print("size raw:", repr(size), "type:", type(size))
@@ -25,12 +27,17 @@ async def get_cars(doors: int|None = None, size: str|None = None):
         result = [x for x in result if x['doors'] == doors]
     return result
 
+
 @app.get("/cars/{id}")
-async def car_by_id(id):
+async def car_by_id(id: int) -> dict:
     """Return one car selected by id."""
     print(type(id))
     result = [x for x in db if x['id'] == id]
-    return result[0]
+    if result:
+        return result[0]
+        print(f"in car_by_id, id = {id}")
+    else:
+        raise HTTPException(status_code=404, detail=f"No car exists with id {id}")
 
 
 @app.get("/")
@@ -38,3 +45,6 @@ async def welcome(name):
     """Return a welcome message."""
     return {'message': f"Welcome, {name.upper()} to the Car Sharing service!"}
 
+
+if __name__ == "__main__":
+    uvicorn.run("carsharing:app", reload=True)
