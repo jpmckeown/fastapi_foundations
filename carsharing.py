@@ -14,12 +14,16 @@ db = [
 ]
 
 @app.get("/cars/")
-async def get_cars(size=None):
+async def get_cars(doors: int|None = None, size: str|None = None):
     """Retrieve all cars."""
+    print("doors raw:", repr(doors), "type:", type(doors))
+    print("size raw:", repr(size), "type:", type(size))
+    result = db
     if size:
-        return [x for x in db if x['size'] == size]
-    else:
-        return db
+        result = [x for x in result if x['size'] == size]
+    if doors:
+        result = [x for x in result if x['doors'] == doors]
+    return result
 
 @app.get("/")
 async def welcome(name):
